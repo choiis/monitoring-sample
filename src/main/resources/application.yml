@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: "monitor-sample"
+
+server:
+  port: 6060
+management:
+  server:
+    port: 6070
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+logging:
+  file:
+    path: /opt/logs/

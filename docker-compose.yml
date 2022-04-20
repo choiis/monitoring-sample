@@ -1,0 +1,58 @@
+version: "3"
+
+networks:
+  monitor:
+
+services:
+  monitoring-sample:
+    image: monitoring-sample-docker
+    ports:
+      - "6060:6060"
+      - "6070:6070"
+    volumes:
+      - "./logs/:/opt/logs/"
+    networks:
+      - monitor
+  
+  prometheus:
+    image: prom/prometheus:v2.33.1
+    ports:
+      - "9090:9090"
+    networks:
+      - monitor
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+  
+  loki:
+    image: grafana/loki:2.5.0
+    ports:
+      - "3100:3100"
+    volumes:
+      - "./loki_config.yml:/opt/loki_config.yml"
+    command: "-config.file=/opt/loki_config.yml"
+    networks:
+      - monitor
+
+  promtail:
+    image: grafana/promtail:2.5.0
+    volumes:
+      - "./logs/:/opt/logs/"
+      - "./promtail_config.yml:/opt/promtail_config.yml"
+    command: "-config.file=/opt/promtail_config.yml"
+    networks:
+      - monitor
+
+  grafana:
+    image: grafana/grafana:8.0.2
+    ports:
+      - "3000:3000"
+    depends_on:
+      - loki
+      - prometheus
+    networks:
+      - monitor
+    volumes:
+      - "./datasources1.yml:/etc/grafana/provisioning/datasources/datasources1.yml"
+      - "./datasources2.yml:/etc/grafana/provisioning/datasources/datasources2.yml"
