@@ -10,6 +10,7 @@ services:
       - "6060:6060"
       - "6070:6070"
     volumes:
+      - ./monitoring-sample.conf:/opt/monitoring-sample.conf
       - "./logs/:/opt/logs/"
     networks:
       - monitor
