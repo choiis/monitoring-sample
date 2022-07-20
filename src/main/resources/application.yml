@@ -10,7 +10,15 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,prometheus
+        include: '*'
+  endpoint:
+    loggers:
+      enabled: true
+    prometheus:
+      enabled: true
+    health:
+      enabled: true
+
 logging:
   file:
     path: /opt/logs/
